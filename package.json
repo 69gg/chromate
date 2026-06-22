@@ -1,0 +1,44 @@
+{
+  "name": "chromate-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for coordinate-driven Chrome tab automation over CDP.",
+  "type": "module",
+  "bin": {
+    "chromate-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "docs"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.typecheck.json --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "chrome",
+    "cdp",
+    "automation"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "sharp": "^0.33.0",
+    "ws": "^8.18.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  }
+}
