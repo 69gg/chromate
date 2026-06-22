@@ -19,7 +19,7 @@ npm run build
 
 ## Design Notes
 
-Chromate talks to the browser-level CDP WebSocket from `/json/version`. It lists tabs with `Target.getTargets`, activates a tab with `Target.activateTarget`, attaches with `Target.attachToTarget` using `flatten: true`, and sends page commands through the returned session id.
+Chromate talks to the browser-level CDP WebSocket from `/json/version`. If `CHROMATE_CDP_ENDPOINT` is unset, it probes configured localhost ports and uses the first endpoint that returns `webSocketDebuggerUrl`. It lists tabs with `Target.getTargets`, activates a tab with `Target.activateTarget`, attaches with `Target.attachToTarget` using `flatten: true`, and sends page commands through the returned session id.
 
 The screenshot coordinate system is CSS viewport pixels. `Page.captureScreenshot` captures the page viewport and `Input.dispatchMouseEvent` consumes the same coordinate space.
 

@@ -1,6 +1,6 @@
 # Security Notes
 
-Chrome remote debugging gives full control over the browser profile that exposes it. Treat the CDP endpoint as sensitive.
+Chrome remote debugging gives full control over the browser profile that exposes it. Treat the CDP endpoint as sensitive. Chromate can auto-discover localhost CDP ports, so only expose remote debugging for browser profiles you are comfortable automating.
 
 Recommended defaults:
 

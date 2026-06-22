@@ -1,6 +1,7 @@
 import WebSocket from "ws";
 import type { ChromateConfig } from "../config.js";
 import { withTimeout } from "../utils/time.js";
+import { discoverLocalCdpEndpoint, probeCdpEndpoint } from "./discovery.js";
 import type {
   CdpCommandMessage,
   CdpIncomingMessage,
@@ -97,27 +98,21 @@ export class CdpConnection implements CdpTransport {
   }
 
   private async resolveBrowserWebSocketUrl(): Promise<string> {
-    if (this.config.cdpEndpoint.startsWith("ws://") || this.config.cdpEndpoint.startsWith("wss://")) {
-      return this.config.cdpEndpoint;
+    const configuredEndpoint = this.config.cdpEndpoint;
+    if (configuredEndpoint === undefined) {
+      return (await discoverLocalCdpEndpoint(this.config)).webSocketDebuggerUrl;
     }
 
-    const versionUrl = new URL("/json/version", this.config.cdpEndpoint);
-    const response = await withTimeout(
-      fetch(versionUrl),
-      this.config.connectTimeoutMs,
-      "CDP /json/version request"
-    );
-
-    if (!response.ok) {
-      throw new Error(`CDP endpoint returned HTTP ${response.status}`);
+    if (configuredEndpoint.startsWith("ws://") || configuredEndpoint.startsWith("wss://")) {
+      return configuredEndpoint;
     }
 
-    const payload = (await response.json()) as { webSocketDebuggerUrl?: string };
-    if (payload.webSocketDebuggerUrl === undefined) {
-      throw new Error("CDP endpoint did not return webSocketDebuggerUrl");
+    const discovered = await probeCdpEndpoint(configuredEndpoint, this.config.connectTimeoutMs);
+    if (discovered === undefined) {
+      throw new Error(`CDP endpoint is not available or did not return webSocketDebuggerUrl: ${configuredEndpoint}`);
     }
 
-    return payload.webSocketDebuggerUrl;
+    return discovered.webSocketDebuggerUrl;
   }
 
   private handleMessage(raw: string): void {

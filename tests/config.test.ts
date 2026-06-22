@@ -5,7 +5,9 @@ describe("loadConfig", () => {
   it("loads defaults", () => {
     const config = loadConfig({});
 
-    expect(config.cdpEndpoint).toBe("http://127.0.0.1:9222");
+    expect(config.cdpEndpoint).toBeUndefined();
+    expect(config.cdpDiscoveryPorts).toEqual([9222, 9223, 9224, 9333]);
+    expect(config.discoveryTimeoutMs).toBe(350);
     expect(config.connectTimeoutMs).toBe(10_000);
     expect(config.gridStep).toBe(100);
   });
@@ -13,6 +15,8 @@ describe("loadConfig", () => {
   it("loads env overrides", () => {
     const config = loadConfig({
       CHROMATE_CDP_ENDPOINT: "http://127.0.0.1:9444",
+      CHROMATE_CDP_DISCOVERY_PORTS: "9229,9333",
+      CHROMATE_DISCOVERY_TIMEOUT_MS: "99",
       CHROMATE_CONNECT_TIMEOUT_MS: "1234",
       CHROMATE_ACTION_TIMEOUT_MS: "5678",
       CHROMATE_SETTLE_DELAY_MS: "0",
@@ -22,6 +26,8 @@ describe("loadConfig", () => {
 
     expect(config).toMatchObject({
       cdpEndpoint: "http://127.0.0.1:9444",
+      cdpDiscoveryPorts: [9229, 9333],
+      discoveryTimeoutMs: 99,
       connectTimeoutMs: 1234,
       actionTimeoutMs: 5678,
       settleDelayMs: 0,

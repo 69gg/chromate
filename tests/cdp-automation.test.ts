@@ -43,6 +43,8 @@ describe("ChromeAutomation", () => {
 function testConfig(): ChromateConfig {
   return {
     cdpEndpoint: "http://127.0.0.1:9222",
+    cdpDiscoveryPorts: [9222],
+    discoveryTimeoutMs: 100,
     connectTimeoutMs: 1_000,
     actionTimeoutMs: 1_000,
     settleDelayMs: 0,

@@ -22,7 +22,11 @@ async function main(): Promise<void> {
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  logger.info(`Chromate MCP connected to ${config.cdpEndpoint}`);
+  logger.info(
+    config.cdpEndpoint === undefined
+      ? `Chromate MCP will auto-discover local Chrome CDP on ports ${config.cdpDiscoveryPorts.join(", ")}`
+      : `Chromate MCP configured for ${config.cdpEndpoint}`
+  );
 }
 
 main().catch((error: unknown) => {

@@ -4,7 +4,7 @@ Chromate MCP is a Model Context Protocol server for Chrome tab automation over t
 
 ## Capabilities
 
-- Connect to an existing Chrome instance started with a remote debugging port.
+- Auto-discover a local Chrome instance started with a remote debugging port.
 - List and select Chrome tabs by CDP target id.
 - Capture viewport screenshots with an optional grid and crosshair overlay.
 - Click, scroll, type text, press keys, wait, and read page/viewport info.
@@ -30,7 +30,7 @@ google-chrome-stable \
   --user-data-dir=/tmp/chromate-profile
 ```
 
-Any Chromium-based browser that exposes CDP can work if it supports `/json/version` and a browser-level WebSocket endpoint.
+Chromate auto-discovers local Chrome on ports `9222`, `9223`, `9224`, and `9333` when `CHROMATE_CDP_ENDPOINT` is not set. Any Chromium-based browser that exposes CDP can work if it supports `/json/version` and a browser-level WebSocket endpoint.
 
 ## MCP Configuration
 
@@ -42,13 +42,13 @@ Example client configuration:
     "chromate": {
       "command": "node",
       "args": ["/data0/chromate/dist/index.js"],
-      "env": {
-        "CHROMATE_CDP_ENDPOINT": "http://127.0.0.1:9222"
-      }
+      "env": {}
     }
   }
 }
 ```
+
+Set `CHROMATE_CDP_ENDPOINT` only when you want to force a specific CDP HTTP or WebSocket endpoint.
 
 During development, use:
 
@@ -58,7 +58,9 @@ npm run dev
 
 ## Environment
 
-- `CHROMATE_CDP_ENDPOINT`: CDP HTTP or WebSocket endpoint. Default: `http://127.0.0.1:9222`
+- `CHROMATE_CDP_ENDPOINT`: CDP HTTP or WebSocket endpoint. If omitted, Chromate auto-discovers local CDP.
+- `CHROMATE_CDP_DISCOVERY_PORTS`: comma-separated local ports to scan. Default: `9222,9223,9224,9333`
+- `CHROMATE_DISCOVERY_TIMEOUT_MS`: per-port discovery timeout. Default: `350`
 - `CHROMATE_CONNECT_TIMEOUT_MS`: connection timeout. Default: `10000`
 - `CHROMATE_ACTION_TIMEOUT_MS`: command timeout. Default: `30000`
 - `CHROMATE_SETTLE_DELAY_MS`: wait after auto actions. Default: `500`
