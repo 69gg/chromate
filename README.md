@@ -23,7 +23,7 @@ npm run build
 
 Chromate does not launch Chrome automatically. It can connect to an already-running Chrome in two ways.
 
-For Chrome 144+, open `chrome://inspect/#remote-debugging` in Chrome and enable remote debugging. Then set `CHROMATE_AUTO_CONNECT=true`; Chromate reads Chrome's `DevToolsActivePort` metadata and connects to the running browser after Chrome shows and you approve the permission dialog.
+For Chrome 144+, open `chrome://inspect/#remote-debugging` in Chrome and enable remote debugging. Chromate reads Chrome's `DevToolsActivePort` metadata by default and connects to the running browser after Chrome shows and you approve the permission dialog.
 
 For older Chrome versions or sandbox/VM setups, start Chrome with a remote debugging port:
 
@@ -46,9 +46,7 @@ Example client configuration:
     "chromate": {
       "command": "node",
       "args": ["/data0/chromate/dist/index.js"],
-      "env": {
-        "CHROMATE_AUTO_CONNECT": "true"
-      }
+      "env": {}
     }
   }
 }
@@ -65,7 +63,7 @@ npm run dev
 ## Environment
 
 - `CHROMATE_CDP_ENDPOINT`: CDP HTTP or WebSocket endpoint. If omitted, Chromate auto-discovers local CDP.
-- `CHROMATE_AUTO_CONNECT`: read Chrome 144+ `DevToolsActivePort` metadata instead of scanning ports. Default: `false`
+- `CHROMATE_AUTO_CONNECT`: read Chrome 144+ `DevToolsActivePort` metadata before scanning ports. Default: `true`
 - `CHROMATE_AUTO_CONNECT_CHANNEL`: Chrome channel for default profile lookup: `stable`, `beta`, `dev`, or `canary`. Default: `stable`
 - `CHROMATE_AUTO_CONNECT_USER_DATA_DIR`: explicit Chrome user data directory containing `DevToolsActivePort`
 - `CHROMATE_CDP_DISCOVERY_PORTS`: comma-separated local ports to scan. Default: `9222,9223,9224,9333`

@@ -62,7 +62,7 @@ function readBoolean(value: string | undefined, fallback: boolean): boolean {
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): ChromateConfig {
   return configSchema.parse({
     cdpEndpoint: env.CHROMATE_CDP_ENDPOINT,
-    autoConnect: readBoolean(env.CHROMATE_AUTO_CONNECT, false),
+    autoConnect: readBoolean(env.CHROMATE_AUTO_CONNECT, true),
     autoConnectChannel: env.CHROMATE_AUTO_CONNECT_CHANNEL ?? "stable",
     autoConnectUserDataDir: env.CHROMATE_AUTO_CONNECT_USER_DATA_DIR,
     cdpDiscoveryPorts: readPorts(env.CHROMATE_CDP_DISCOVERY_PORTS, defaultDiscoveryPorts),
