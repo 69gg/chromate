@@ -1,9 +1,13 @@
+import { mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { ChromateConfig } from "../src/config.js";
 import {
   buildLocalCdpCandidates,
   discoverLocalCdpEndpoint,
   fetchCdpVersion,
+  readDevToolsActivePort,
   probeCdpEndpoint
 } from "../src/cdp/discovery.js";
 
@@ -40,6 +44,8 @@ describe("CDP discovery", () => {
   it("discovers the first local CDP endpoint", async () => {
     const config: ChromateConfig = {
       cdpDiscoveryPorts: [9222, 9333],
+      autoConnect: false,
+      autoConnectChannel: "stable",
       discoveryTimeoutMs: 100,
       connectTimeoutMs: 1_000,
       actionTimeoutMs: 1_000,
@@ -61,5 +67,19 @@ describe("CDP discovery", () => {
 
     expect(discovered.endpoint).toBe("http://127.0.0.1:9333");
     expect(discovered.webSocketDebuggerUrl).toBe("ws://127.0.0.1:9333/devtools/browser/abc");
+  });
+
+  it("reads Chrome DevToolsActivePort auto-connect metadata", async () => {
+    const userDataDir = await mkdtemp(path.join(tmpdir(), "chromate-test-profile-"));
+    await writeFile(
+      path.join(userDataDir, "DevToolsActivePort"),
+      "45555\n/devtools/browser/abc\n",
+      "utf8"
+    );
+
+    await expect(readDevToolsActivePort(userDataDir)).resolves.toEqual({
+      userDataDir,
+      webSocketDebuggerUrl: "ws://127.0.0.1:45555/devtools/browser/abc"
+    });
   });
 });

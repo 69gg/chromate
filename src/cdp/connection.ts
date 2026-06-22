@@ -1,7 +1,11 @@
 import WebSocket from "ws";
 import type { ChromateConfig } from "../config.js";
 import { withTimeout } from "../utils/time.js";
-import { discoverLocalCdpEndpoint, probeCdpEndpoint } from "./discovery.js";
+import {
+  discoverAutoConnectEndpoint,
+  discoverLocalCdpEndpoint,
+  probeCdpEndpoint
+} from "./discovery.js";
 import type {
   CdpCommandMessage,
   CdpIncomingMessage,
@@ -100,6 +104,10 @@ export class CdpConnection implements CdpTransport {
   private async resolveBrowserWebSocketUrl(): Promise<string> {
     const configuredEndpoint = this.config.cdpEndpoint;
     if (configuredEndpoint === undefined) {
+      if (this.config.autoConnect) {
+        return (await discoverAutoConnectEndpoint(this.config)).webSocketDebuggerUrl;
+      }
+
       return (await discoverLocalCdpEndpoint(this.config)).webSocketDebuggerUrl;
     }
 

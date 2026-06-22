@@ -1,11 +1,12 @@
 # Security Notes
 
-Chrome remote debugging gives full control over the browser profile that exposes it. Treat the CDP endpoint as sensitive. Chromate can auto-discover localhost CDP ports, so only expose remote debugging for browser profiles you are comfortable automating.
+Chrome remote debugging gives full control over the browser profile that exposes it. Treat the CDP endpoint as sensitive. Chromate can read Chrome 144+ auto-connect metadata or auto-discover localhost CDP ports, so only expose remote debugging for browser profiles you are comfortable automating.
 
 Recommended defaults:
 
 - Bind Chrome remote debugging to `127.0.0.1`.
 - Use a separate `--user-data-dir` for automation.
+- For `CHROMATE_AUTO_CONNECT=true`, approve only debugging requests you expect from your MCP client.
 - Do not expose port `9222` to a LAN, container bridge, public IP, or reverse proxy.
 - Avoid using your daily browser profile for untrusted tasks.
 

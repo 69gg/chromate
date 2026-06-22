@@ -6,6 +6,8 @@ describe("loadConfig", () => {
     const config = loadConfig({});
 
     expect(config.cdpEndpoint).toBeUndefined();
+    expect(config.autoConnect).toBe(false);
+    expect(config.autoConnectChannel).toBe("stable");
     expect(config.cdpDiscoveryPorts).toEqual([9222, 9223, 9224, 9333]);
     expect(config.discoveryTimeoutMs).toBe(350);
     expect(config.connectTimeoutMs).toBe(10_000);
@@ -15,6 +17,9 @@ describe("loadConfig", () => {
   it("loads env overrides", () => {
     const config = loadConfig({
       CHROMATE_CDP_ENDPOINT: "http://127.0.0.1:9444",
+      CHROMATE_AUTO_CONNECT: "true",
+      CHROMATE_AUTO_CONNECT_CHANNEL: "canary",
+      CHROMATE_AUTO_CONNECT_USER_DATA_DIR: "/tmp/chrome-profile",
       CHROMATE_CDP_DISCOVERY_PORTS: "9229,9333",
       CHROMATE_DISCOVERY_TIMEOUT_MS: "99",
       CHROMATE_CONNECT_TIMEOUT_MS: "1234",
@@ -26,6 +31,9 @@ describe("loadConfig", () => {
 
     expect(config).toMatchObject({
       cdpEndpoint: "http://127.0.0.1:9444",
+      autoConnect: true,
+      autoConnectChannel: "canary",
+      autoConnectUserDataDir: "/tmp/chrome-profile",
       cdpDiscoveryPorts: [9229, 9333],
       discoveryTimeoutMs: 99,
       connectTimeoutMs: 1234,
